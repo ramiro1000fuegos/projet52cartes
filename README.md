@@ -26,12 +26,15 @@ Les résultats sont triés selon les critères suivants:
 - D'abord les jeux idéaux pour toutes les configurations de joueurs sélectionnées
 - Ensuite les jeux idéaux pour au moins une des configurations sélectionnées
 - Enfin les jeux qui peuvent être joués avec toutes les configurations sélectionnées
-- A l'intérieur de ces bloques, les résultats sont triés selon le ranking BGG, avec deux  modificateurs:
-     - Les jeux ajoutés au catalogue dans les 3 derniers mois bénéficient d'une promotion invesement proportionnelle au temps depuis leur ajout
-     - Les jeux peuvent être avancés ou reculés selon mon avis personnel du jeu en soi et de l'adaptation que j'ai ai faite
+- A l'intérieur de ces bloques, les résultats sont triés selon le ranking BGG, avec 2 ajustements:
+     - les jeux récemment ajoutés au catalogue bénéficient d'une légère promotion temporaire
+     - certains jeux sont remontés ou reculés selon mon appréciation du jeu et de l'adaptation
  
 Chaque résultat présente les éléments suivants:
 - Nom de l'adaptation
+- Est-il un favori?
+- A-il été ajouté au catalogue dans le mois?
+- Répond-il aux critères Flash 52? (facilité d'explication et de mise en place)
 - Ranking BGG
 - Nom du jeu d'origine
 - Nombre de joueurs (conseillé et idéal)
