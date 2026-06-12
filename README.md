@@ -1,4 +1,4 @@
-## PROJET 52 CARTES
+# PROJET 52 CARTES
 
 Catalogue interactiv de jeux de société adaptés à du matériel courant : jeux de cartes, jeux de dés, jeux papier-crayon et autres jeux nécessitant peu de matériel spécialisé.
 
