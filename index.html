@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet 52 cartes - Catalogue de jeux à matériel simple</title>
+    
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        [v-cloak] { display: none; }
+        /* Botones de Jugadores */
+        .btn-player { 
+            border: 2px solid #e2e8f0;
+            transition: all 0.2s; 
+            font-weight: bold; 
+            border-radius: 0.75rem; 
+            text-align: center; 
+            padding: 0.5rem 0; 
+            font-size: 0.875rem; 
+            cursor: pointer; 
+        }
+        .btn-player-active { background-color: #1e1b4b; border-color: #1e1b4b; color: white; }
+        .btn-player-inactive { background-color: white; color: #64748b; }
+        .btn-player-inactive:hover { border-color: #444444 }
+
+        .attr-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            border: 1px solid #cbd5e1; /* Slate 200: Borde estandar */
+            padding: 3px 12px;
+            border-radius: 50px; /* Forma de cápsula */
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #334155;     /* Slate 700: Gris muy oscuro */
+            background-color: #fbfcfd; /* Slate 25: Gris fantasma */            
+            /*margin-bottom: 4px;*/
+        }
+
+        .cat-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            border: 1px solid #c7d2fe; /* Borde Indigo 200 */
+            padding: 3px 12px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            /*text-transform: uppercase;*/    
+            /* CONTRASTE MEJORADO */
+            color: #312e81;     /* Indigo 900: Azul casi negro */
+            background-color: #eff6ff; /* Azul muy muy claro */
+        }        
+
+        .section-card { @apply bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-slate-200 mb-8; }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        .fidelity-box {
+            background-color: #fbfcfd; /* Tu Slate 25 ultra suave */
+            border: 1px solid #f1f5f9; /* Slate 100 */
+            border-radius: 1rem;       /* 16px */
+            padding: 10px 14px;        /* Padding reducido y compensado */
+            margin-bottom: 12px;       /* Espacio con los botones de abajo */
+            font-size: 0.9rem;            
+        }
+
+        .btn-corner {
+            width: 42px; /* Tamaño táctil ideal */
+            height: 42px;
+            min-width: 42px; /* Evita que se encoja en pantallas pequeñas */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px; /* Círculo perfecto */
+            background-color: white;
+            border: 2px solid #f1f5f9;
+            color: #94a3b8;
+            transition: all 0.2s;
+            cursor: pointer;
+            font-size: 1.4rem;
+            font-weight: 800;                        
+        }
+        .btn-corner:hover {
+            border-color: #cbd5e1;
+            color: #6366f1;
+            background-color: #f8fafc;
+            font-size: 1.4rem;
+            font-weight: 800;            
+        }
+        
+        /* Ajuste para el contenedor de la búsqueda para que los círculos no se peguen */
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Espacio entre el input y los botones */
+        }        
+        
+        /* 1. Botón Principal (Reglas Móvil) - Indigo Profundo: Denota autoridad y acción principal */
+        .btn-mobile {
+            background-color: #1e1b4b; /* Indigo 950: Azul casi negro */
+            color: white;
+            font-size: .9rem;
+            font-weight: 700;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-mobile:hover { background-color: #312e81; /* Indigo 900 */ }
+        
+        /* 2. Botón Secundario (PDF) - Verde Bosque/Ceniza: Diferente al azul pero calmado, invita a la utilidad */
+        .btn-pdf {
+            background-color: #4338ca; /* Indigo 700: Azul vibrante pero serio */
+            color: white;
+            font-size: .9rem;
+            font-weight: 700;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-pdf:hover { background-color: #3730a3; /* Indigo 800 */ }
+        
+        /* 3. Botón Terciario (BGG) - Gris Neutro: Parece un botón de "fuente" o "archivo", no compite con los otros */
+        .btn-bgg {
+            background-color: #e2e8f0; /* Slate 200: Gris claro con matiz azul */
+            color: #334155;            /* Slate 700: Texto oscuro para contraste */
+            font-size: .9rem;
+            font-weight: 700;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-bgg:hover {
+            background-color: #cbd5e1; /* Slate 300 */
+            color: #1e293b;            /* Slate 800: texto un poco más oscuro */ 
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.7); /* Slate 900 opaco */
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            max-width: 28rem;
+            width: 100%;
+            position: relative;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+       
+    </style>
+</head>
+<body class="bg-slate-50 p-4 font-sans text-slate-900 tracking-tight">
+
+<div id="app" v-cloak class="max-w-6xl mx-auto pb-20">
+        
+        <!-- 1. HEADER EDITORIAL -->
+        <header class="py-4 flex flex-col md:flex-row justify-between items-start gap-8 border-b border-slate-200 mb-4 md:mb-10">
+          
+            <div class="max-w-2xl">
+                <h1 class="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none mb-4">
+                    PROJET <span class="text-indigo-600">52 CARTES</span>
+                </h1>
+                <p class="text-lg font-bold text-slate-600 leading-tight">
+                    {{ filteredGames.length }} jeux adaptés au matériel du quotidien.  <!-- {{ games.length }} -->
+                </p>
+            </div>
+        </header>
+    
+        <!-- 2. RECHERCHE & FILTRES -->
+        <section id="filter-section" class="section-card sticky top-0 rounded-t-none z-40 bg-white/95 backdrop-blur-sm shadow-xl mb-6 rounded-xl">
+
+            <div class="px-2 pt-2 md:px-4 md:pt-4 flex items-center search-container">
+                <!-- El buscador ocupa el espacio sobrante -->
+                <div class="relative group flex-1">
+                    <!-- Icono Lupa -->
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-indigo-600 transition-colors">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </div>
+                    
+                    <!-- Input -->
+                    <input type="text" 
+                           v-model="searchQuery" 
+                           placeholder="Jeu, auteur, année, catégorie, mécanique..." 
+                           class="w-full bg-slate-50 border-2 border-slate-100 py-2.5 pl-10 pr-10 rounded-xl text-xs font-bold outline-none focus:border-indigo-500 focus:bg-white transition-all shadow-sm">
+                    
+                    <!-- Botón de borrar (X) -->
+                    <button v-if="searchQuery.length > 0" 
+                            @click="searchQuery = ''" 
+                            class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-rose-500 transition-colors">
+                        <i class="fa-solid fa-circle-xmark text-sm"></i>
+                    </button>
+                </div>
+
+                <!-- 
+                    <div class="flex gap-1 text-slate-600 hover:text-slate-900 transition-colors h-10 w-10 mx-auto">
+                    <button @click="showInfoPopup = true" class="btn-corner" title="Informations">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </button>
+                    <button @click="showHelpPopup = true" class="btn-corner" title="Aide">
+                        <i class="fa-solid fa-circle-question"></i>
+                    </button>
+                </div>         -->
+                <!-- Botones de ayuda (Círculos) -->
+                <button @click="showHelpPopup = true" class="btn-corner" title="Aide">
+                    <i class="fa-solid fa-question text-sm"></i> <!--<i class="fa-solid fa-circle-question"></i>-->
+                </button>                
+                <button @click="showInfoPopup = true" class="btn-corner" title="Informations">
+                    <i class="fa-solid fa-info text-sm"></i> <!-- <i class="fa-solid fa-circle-info"></i>-->
+                </button>
+                
+            </div>
+
+            
+            <!--<div class="grid grid-cols-2 md:grid-cols-12 gap-x-4 gap-y-3 items-start p-2 md:p-4">-->
+            <div class="grid grid-cols-2 md:grid-cols-12 gap-2 items-start p-2 md:p-4">
+                
+                <!-- Joueurs -->
+                <div class="col-span-2 md:col-span-5">
+                    <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Joueurs</h3>
+                        
+                    <!-- Fila 1: 1-5 + Control -->
+                    <div class="grid grid-cols-6 gap-2 mb-2 items-center text-center">
+                        <button v-for="n in 5" :key="n" @click="togglePlayer(n)" 
+                                :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
+                            {{n}}
+                        </button>
+                        <button @click="toggleRange6to10" class="flex items-center justify-center text-indigo-600 hover:text-indigo-900 transition-colors h-10 w-10 mx-auto">
+                            <i class="fa-solid" :class="showRange6to10 ? 'fa-circle-minus text-xl' : 'fa-circle-plus text-xl'"></i>
+                        </button>
+                    </div>
+                
+                    <!-- Fila 2: 6-10 + Control -->
+                    <div v-if="showRange6to10" class="grid grid-cols-6 gap-2 mb-2 items-center text-center animate-fade-in">
+                        <button v-for="n in [6,7,8,9,10]" :key="n" @click="togglePlayer(n)" 
+                                :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
+                            {{n}}
+                        </button>
+                        <button @click="toggleRange11to20" class="flex items-center justify-center text-indigo-600 hover:text-indigo-900 transition-colors h-10 w-10 mx-auto">
+                            <i class="fa-solid" :class="showRange11to20 ? 'fa-circle-minus text-xl' : 'fa-circle-plus text-xl'"></i>
+                        </button>
+                    </div>
+                
+                    <!-- Rango 11 a 20 (Alineado con lo anterior) -->
+                    <div v-if="showRange11to20" class="animate-fade-in">
+                        <!-- Fila 3: 11-15 + Espacio vacío -->
+                        <div class="grid grid-cols-6 gap-2 mb-2 items-center">
+                            <button v-for="n in [11,12,13,14,15]" :key="n" @click="togglePlayer(n)" 
+                                    :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
+                                {{n}}
+                            </button>
+                            <div class="h-10 w-10"></div> <!-- Celda 6 vacía para mantener el ancho -->
+                        </div>
+                
+                        <!-- Fila 4: 16-20 + Espacio vacío -->
+                        <div class="grid grid-cols-6 gap-2 items-center">
+                            <button v-for="n in [16,17,18,19,20]" :key="n" @click="togglePlayer(n)" 
+                                    :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
+                                {{n}}
+                            </button>
+                            <div class="h-10 w-10"></div> <!-- Celda 6 vacía para mantener el ancho -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Fila de filtros: Matériel (1/3), Âge (1/3), Boutons (1/3) -->
+                <div class="col-span-2 md:col-span-7 grid grid-cols-3 gap-2 md:gap-4 items-end">                    
+
+                    <!-- Âge (1 de 3) -->
+                    <div class="flex flex-col">              
+                        <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Âge</h3>
+                        <select v-model="filters.age" class="w-full bg-slate-50 border-2 border-slate-100 p-2 rounded-xl text-xs font-bold outline-none focus:border-indigo-500">
+                            <option :value="99">Sans limite</option>
+                            <option v-for="a in [12,10,8,6]" :value="a">{{a}}-{{a+1}} ans</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Material (1 de 3) -->
+                    <div class="flex flex-col">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xs font-black uppercase text-slate-400 tracking-widest">Matériel</h3>
+                        </div>
+                        <select v-model="filters.material" class="w-full bg-slate-50 border-2 border-slate-100 p-2 rounded-xl text-xs font-bold outline-none focus:border-indigo-500">
+                            <option value="3">Maxi</option>
+                            <option value="2">Standard</option>
+                            <option value="1">Mini</option>
+                        </select>
+                    </div>
+
+               
+                    <!-- 3. Groupe de 3 Boutons (Flash, Fav, New) -->
+                    <div class="grid grid-cols-3 gap-1"> <!-- gap-1 pour serrer les boutons -->
+
+                         <!-- Botón Flash 52 (1 de 9) -->
+                       <div class="flex flex-col">
+                            <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-tighter text-center">Flash</h3>
+                            <button @click="filters.onlyFlash = !filters.onlyFlash" 
+                                    :class="filters.onlyFlash ? 'btn-player-active' : 'btn-player-inactive'"
+                                    class="btn-player w-full flex items-center justify-center py-2 h-[34px]">
+                                <i class="fa-solid fa-bolt"></i>
+                            </button>                        
+                        </div>
+                        
+                         <!-- Botón Coeur (1 de 9) -->
+                        <div class="flex flex-col">
+                            <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-tighter text-center">Fav</h3>
+                            <button @click="filters.onlyHeart = !filters.onlyHeart" 
+                                    :class="filters.onlyHeart ? 'btn-player-active' : 'btn-player-inactive'"
+                                    class="btn-player w-full flex items-center justify-center py-2 h-[34px]">
+                                <i class="fa-solid fa-heart"></i>
+                            </button>                        
+                        </div>
+    
+                         <!-- Botón New (1 de 9) -->
+                        <div class="flex flex-col">
+                            <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-tighter text-center">New</h3>
+                            <button @click="filters.onlyNew = !filters.onlyNew" 
+                                    :class="filters.onlyNew ? 'btn-player-active' : 'btn-player-inactive'"
+                                    class="btn-player w-full flex items-center justify-center py-2 h-[34px]">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </button>                        
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <!-- 4. RÉSULTATS JEUX -->
+    <div v-if="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+       
+        <div v-for="game in filteredGames" :key="game.id" 
+             :id="'game-' + game.id" 
+             @click="toggleExpand(game.id)"
+             class="bg-white rounded-[2rem] border-2 border-slate-200 overflow-hidden cursor-pointer hover:border-indigo-400 transition-all shadow-sm"
+             :class="{'ring-4 ring-indigo-500/20 border-indigo-500 shadow-xl': expandedId === game.id}">
+            
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex-1">
+                        <h2 class="text-lg font-black text-slate-900 leading-tight uppercase">{{ game.name }} 
+                        <span v-if="game.heart">❤️</span> 
+                        <span v-if="game.isNew">🪄</span> 
+                        <span v-if="game.isFlash">⚡</span>                            
+                        </h2>
+                        <p class="text-s text-slate-300 font-bold mt-1 uppercase">{{ game.origin }}</p>
+                    </div>
+                    <div class="text-s font-black text-slate-300">#{{ game.rankingBGG }}</div>
+                </div>
+
+                <div class="flex flex-wrap gap-2 mb-2">
+                    <div class=""><i class="fa-solid fa-users text-indigo-300"></i> {{ game.nbPersonnes }}</div>
+                    <div class=""><i class="fa-solid fa-cake-candles text-indigo-300"></i> {{ game.ageMin }}+</div>
+                    <div class="attr-pill"><i class="fa-solid fa-box text-indigo-300"></i> {{ game.config }}</div>
+                </div>
+
+                <!-- Pastillas de Categorías BGG -->
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span v-if="game.catBGG.Famille" class="cat-pill">
+                        <i class="fa-solid fa-people-group"></i> Famille
+                    </span>
+                    <span v-if="game.catBGG.Party" class="cat-pill">
+                        <i class="fa-solid fa-masks-theater"></i> Party
+                    </span>
+                    <span v-if="game.catBGG.Abstrait" class="cat-pill">
+                        <i class="fa-solid fa-chess-board"></i> Abstrait
+                    </span>
+                    <span v-if="game.catBGG.Stratégie" class="cat-pill">
+                        <i class="fa-solid fa-gears"></i> Stratégie
+                    </span>
+                </div>                
+
+                <p class="text-slate-600 text-s leading-relaxed" :class="expandedId === game.id ? '' : 'line-clamp-1'">{{ game.description }}</p>
+              
+                <div v-if="expandedId === game.id" class="mt-3 pt-3 space-y-4 animate-fade-in">
+
+                    <!--
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-s">
+                        <h4 class="font-black uppercase text-slate-600 mb-1 tracking-widest">Fidélité : {{ game.fidelityScore }}/4</h4>
+                        <p class="text-slate-600 italic">{{ game.fidelityDetails }}</p>
+                    </div>
+                    -->
+
+                    <!-- Bloque Fidelidad (dentro de la ficha expandida) -->
+                    <div class="fidelity-box">
+                        <div class="flex justify-between items-center mb-1">
+                            <h4 class="font-black uppercase text-slate-400 tracking-widest">
+                                Fidélité au jeu d'origine
+                            </h4>
+                            <span class="font-black text-indigo-600">
+                                {{ game.fidelityScore }}/4
+                            </span>
+                        </div>
+                        <p class="text-slate-500 italic leading-snug">
+                            {{ game.fidelityDetails }}
+                        </p>
+                    </div>                    
+
+                    <div class="flex flex-col gap-2 mt-4">
+                        <!-- BOTÓN 1: EL MÁS IMPORTANTE -->
+                        <a :href="game.links.mobile" target="_blank" @click.stop 
+                           class="btn-mobile font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-mobile-screen-button opacity-70"></i> RÈGLES MOBILE
+                        </a>
+                    
+                        <div class="grid gap-2" :class="game.links.bgg ? 'grid-cols-2' : 'grid-cols-1'">
+                            <!-- BOTÓN 2: UTILIDAD (PDF) -->
+                            <a v-if="game.links.pdf" :href="game.links.pdf" target="_blank" @click.stop 
+                               class="btn-pdf font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 shadow-sm">
+                                <i class="fa-solid fa-file-pdf opacity-70"></i> PDF
+                            </a>
+                    
+                            <!-- BOTÓN 3: EL MENOS IMPORTANTE (Solo si existe link) -->
+                            <a v-if="game.links.bgg" :href="game.links.bgg" target="_blank" @click.stop 
+                               class="btn-bgg font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2">
+                                <i class="fa-brands fa-fort-awesome opacity-50"></i> BGG
+                            </a>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popups (Modals) -->
+    <!-- POPUP AYUDA (?) -->
+    <div v-if="showHelpPopup" class="modal-overlay" @click.self="showHelpPopup = false">
+        <div class="modal-content animate-fade-in">
+            <button @click="showHelpPopup = false" class="absolute top-4 right-6 text-slate-400 hover:text-slate-900">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            
+            <h3 class="text-lg font-black text-indigo-600 leading-tight uppercase">Filtres joueurs</h3>
+            <p>Sélectionnez une ou plusieurs configurations. Les jeux idéaux pour toutes tes sélections apparaissent en premier, puis ceux idéaux pour l'une d'elles, puis les compatibles.</p>
+
+            <h3 class="text-lg font-black text-indigo-600 leading-tight uppercase mt-4">Matériel</h3>
+            <p><b>Mini</b> = 1 jeu de 52 cartes, papier, stylo</p>
+            <p><b>Standard</b> = 2 jeux, jetons, dés, quelques pages imprimées réutilisables (inclut Mini)</p>
+            <p><b>Maxi</b> = matériel additionnel ou spécial (inclut Standard)</p>
+
+            <h3 class="text-lg font-black text-indigo-600 leading-tight uppercase mt-4">Icônes</h3>
+            <p><b>Flash</b> = rapide à expliquer et à jouer</p>
+            <p><b>Fav</b> = mes coups de cœur</p>
+            <p><b>New</b> = ajouts du mois</p>
+
+            <h3 class="text-lg font-black text-indigo-600 leading-tight uppercase mt-4">Recherche textuelle</h3>
+            <p>Utilisez-la pour chercher le titre original, l'auteur, la date de publication, le titre de l'adaptation, la catégorie BGG, le matériel utilisé, une mécanique…</p>
+            <p class="text-slate-500"><i>Ex : "party", "dés", "plis", "Knizia", "2019", "coopératif"</i></p>
+        </div>
+    </div>
+
+    <!-- POPUP INFO (i) -->
+    <div v-if="showInfoPopup" class="modal-overlay" @click.self="showInfoPopup = false">
+        <div class="modal-content animate-fade-in">
+            <button @click="showInfoPopup = false" class="absolute top-4 right-6 text-slate-400 hover:text-slate-900">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <h3 class="text-lg font-black text-indigo-600 leading-tight uppercase">À propos des adaptations</h2>
+            <p class="mt-4">La plupart des jeux sont des adaptations de titres publiés, rendues jouables avec du matériel courant.</p>
+            <p class="mt-4">Règles, illustrations et éléments protégés sont recréés ; le jeu original est toujours cité.</p>
+            <p class="mt-4">Ce projet n'est pas un substitut — il encourage à découvrir les œuvres de leurs auteurs.</p>
+        </div>
+    </div>
+    
+</div>
+
+<script>
+const { createApp } = Vue
+
+createApp({
+    data() {
+        return {
+            loading: true,
+            expandedId: null,
+            showExtra: false,
+            showLegend: false,
+            showRange6to10: false,  
+            showRange11to20: false,             
+            showInfoPopup: false,
+            showHelpPopup: false,            
+            selectedPlayers: [],
+            sortBy: 'ideal',
+            searchQuery: '', 
+            games: [],
+            categories: [
+                { name: "Famille", label: "Famille", icon: "fa-solid fa-people-group" },
+                { name: "Party", label: "Party", icon: "fa-solid fa-masks-theater" },
+                { name: "Abstrait", label: "Abstrait", icon: "fa-solid fa-chess-board" },
+                { name: "Stratégie", label: "Stratégie", icon: "fa-solid fa-gears" }
+            ],
+            filters: { age: 99, material: 3, time: '3-Long', cats: [], onlyNew: false, onlyHeart: false, onlyFlash: false  }
+        }
+    },
+    mounted() { this.fetchData(); },
+    computed: {
+        filteredGames() {
+            const searchTerms = this.getLabels(this.searchQuery);
+            return this.games.filter(game => {
+    
+                // --- 1. FILTRO DE TEXTO (Lógica de Pertenencia) ---
+                if (searchTerms.length > 0) {
+                    // CADA término buscado por el usuario...
+                    const matchSearch = searchTerms.every(term => {
+                        // ...debe estar contenido en AL MENOS UNA de las etiquetas del juego
+                        return game.labels.some(label => label.includes(term));
+                    });
+                    if (!matchSearch) return false;
+                }
+    
+                // --- 2. RESTO DE FILTROS ---
+                // (Aquí mantienes tu lógica actual de jugadores, edad, material, etc.)
+                
+                const matchPlayer = this.selectedPlayers.length === 0 || this.selectedPlayers.every(p => game.players[p] && !game.players[p].includes('🔴'));
+                const matchAge = game.ageMin <= this.filters.age;
+                const configRank = { 'Mini': 1, 'Standard': 2, 'Maxi': 3 };
+                const matchMaterial = game.configLevel <= this.filters.material;
+                const matchNew = this.filters.onlyNew ? game.isNew : true;
+                const matchHeart = this.filters.onlyHeart ? game.heart : true;
+                const matchFlash = this.filters.onlyFlash ? game.isFlash : true;
+                return matchPlayer && matchAge && matchMaterial && matchFlash && matchNew && matchHeart;
+            }).sort((a, b) => {
+               // A. Contamos solo los verdes (🟢) para la selección actual
+                const getGreenCount = (game) => {
+                    if (this.selectedPlayers.length === 0) return 0;
+                    return this.selectedPlayers.reduce((acc, p) => 
+                        acc + (game.players[p] && game.players[p].includes('🟢') ? 1 : 0), 0);
+                };
+        
+                const greensA = getGreenCount(a);
+                const greensB = getGreenCount(b);
+        
+                // B. Criterio Primario: Más verdes arriba
+                if (greensB !== greensA) {
+                    return greensB - greensA;
+                }
+        
+                // C. Criterio Secundario: Ranking BGG Ponderado
+                const getWeightedRank = (game) => {
+                    // 1. Base del ranking (1 a 30,000)
+                    let virtualRank = parseInt(game.rankingBGG) || 30000;
+                
+                    // 2. Ajuste por Nota RKF (Lineal entre -15,000 y +15,000)
+                    // Nota 10 -> -15,000 | Nota 5 -> 0 | Nota 0 -> +15,000
+                    // Fórmula: (5 - nota) * 3000
+                    const noteAjuste = (5 - game.scoreRKF) * 2000;
+                    virtualRank += noteAjuste;
+                
+                    // 3. Ajuste por Novedad (Solo si tiene menos de 90 días)
+                    const today = new Date();
+                    const diffMs = today - game.dateAdded;
+                    const diffDays = diffMs / (1000 * 60 * 60 * 24);
+                
+                    if (diffDays >= 0 && diffDays <= 90) {
+                        // Bono de -10,000 (hoy) bajando hasta 0 (a los 90 días)
+                        const noveltyBono = (1 - (diffDays / 90)) * 10000;
+                        virtualRank -= noveltyBono;
+                    }                
+                    return virtualRank;
+                    
+                };
+        
+                return getWeightedRank(a) - getWeightedRank(b);
+            });
+        }
+    },
+    methods: {
+        toggleRange6to10() {
+            this.showRange6to10 = !this.showRange6to10;
+            if (!this.showRange6to10) {
+                this.showRange11to20 = false; // Cerramos el siguiente rango también
+                this.selectedPlayers = this.selectedPlayers.filter(n => n <= 5);
+            }
+        },
+        toggleRange11to20() {
+            this.showRange11to20 = !this.showRange11to20;
+            if (!this.showRange11to20) {
+                this.selectedPlayers = this.selectedPlayers.filter(n => n <= 10);
+            }
+        },        
+        toggleExpand(id) {
+            if (this.expandedId === id) {
+                this.expandedId = null;
+            } else {
+                this.expandedId = id;
+                // Este bloque hace que la pantalla se desplace a la ficha
+                //setTimeout(() => {
+                //    const el = document.getElementById('game-' + id);
+                //    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                //}, 100);
+                setTimeout(() => {
+                    const card = document.getElementById('game-' + id);
+                    const header = document.getElementById('filter-section');
+                    
+                    if (card && header) {
+                        // 1. Medimos cuánto mide la barra de filtros ahora mismo
+                        const headerHeight = header.offsetHeight;
+                        
+                        // 2. Calculamos la posición de la ficha respecto al total de la página
+                        // Añadimos 16px extra de "aire" (gap) para que no esté pegada
+                        const topOffset = card.getBoundingClientRect().top + window.pageYOffset - headerHeight - 16;
+        
+                        // 3. Movemos la pantalla a esa posición exacta
+                        window.scrollTo({
+                            top: topOffset,
+                            behavior: 'smooth'
+                        });
+                    }
+                }, 100);
+
+
+                
+            }
+        },        
+        async fetchData() {
+            const URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQiSGJxvRlizw98U7hsFPScVZv7YKL9a-lL1AuXMfGhUz1oCl6Eb7SVSsTOdRIDHQy4ORsseMTkf6YH/pub?gid=0&single=true&output=csv";
+            try {
+                const response = await fetch(URL);
+                const csvText = await response.text();
+                Papa.parse(csvText, {
+                    header: true, skipEmptyLines: true,
+                    complete: (results) => {
+                        this.games = results.data.filter(row => row.Nom_Adaptation).map((row, index) => {
+                            const author = row.Auteur || "";
+                            const rawLabels = row.Labels || "";
+                        
+                            // Construimos el ADN del juego: una lista de todas sus etiquetas posibles
+                            const gameLabels = [
+                                ...this.getLabels(row.Nom_Adaptation),
+                                ...this.getLabels(row.Jeu_Origine),
+                                ...this.getLabels(author),
+                                ...this.getLabels(rawLabels)
+                            ];                            
+                            return {
+                                id: index, name: row.Nom_Adaptation, description: row.Description, origin: row.Jeu_Origine, ageMin: parseInt(row.Age_Min) || 0, 
+                                author: author, labels: gameLabels,
+                                configLevel: row.Config_materiel ? (parseInt(row.Config_materiel.charAt(0)) || 3) : 3,
+                                config: row.Config_materiel ? (row.Config_materiel.includes('-') ? row.Config_materiel.split('-')[1] : row.Config_materiel) : 'Maxi',
+                                nbPersonnes: row.Nb_personnes, timeStart: row.Temps_avant_demarrage || '3-Long', rankingBGG: row.Ranking_BGG || 'N/A',
+                                scoreRKF: parseFloat(row.Note_RKF) || 5,
+                                isFlash: row.Flash52 !== "",
+                                isNew: row.New !== "", heart: row.Favori !== "", 
+                                dateAdded: row.Date_Publication ? new Date(row.Date_Publication) : new Date("1900-01-01"),
+                                fidelityScore: this.parseFidelity(row.Fidelite),
+                                fidelityDetails: row.Details_Fidelite, catBGG: { Famille: row.Famille !== "", Party: row.Party !== "", Abstrait: row.Abstrait !== "", Stratégie: row.Stratégie !== "" },
+                                players: this.extractPlayers(row), links: { mobile: row.Lien_Regles_Mobiles, pdf: row.Lien_PDF, bgg: row.Lien_BGG }
+                            }
+                        });
+                        this.loading = false;
+                    }
+                });
+            } catch(e) { alert("Erreur de synchronisation."); this.loading = false; }
+        },
+        extractPlayers(row) { let p = {}; for (let i = 1; i <= 21; i++) { if (row[i.toString()]) p[i] = row[i.toString()]; } return p; },
+        parseFidelity(text) { if (!text) return 0; if (text.includes("4")) return 4; if (text.includes("3")) return 3; if (text.includes("2")) return 2; return 1; },
+        togglePlayer(n) { const i = this.selectedPlayers.indexOf(n); if (i > -1) this.selectedPlayers.splice(i, 1); else this.selectedPlayers.push(n); },
+        toggleCat(name) { const i = this.filters.cats.indexOf(name); if (i > -1) this.filters.cats.splice(i, 1); else this.filters.cats.push(name); },
+        calculateScore(game) {
+            if (this.selectedPlayers.length === 0) return 0;
+            let score = 0;
+            this.selectedPlayers.forEach(p => { const status = game.players[p]; if (status?.includes('🟢')) score += 100; else if (status?.includes('🟡')) score += 10; });
+            return score;
+        },
+        normalize(text) {
+            if (!text) return "";
+            return text.toString().toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // 2. Quita acentos
+                .replace(/[^a-z0-9']/g, " ")                      // 1. Solo letras, números y el símbolo '
+                .replace(/([aeiou])s\b/g, "$1")                  // 4. Plurales: cartas -> carta
+                .replace(/([aeiou])x\b/g, "$1")                  // 4. Plurales: jeux -> jeu
+                .replace(/\s+/g, " ")                            // 5. Quita dobles espacios
+                .trim();
+        },        
+        getLabels(text) {
+            if (!text) return [];
+            const normalized = this.normalize(text);
+            
+            // Extraemos bloques entre '...'
+            const quotes = normalized.match(/'([^']+)'/g) || [];
+            const quotedLabels = quotes.map(l => l.replace(/'/g, ""));
+            
+            // Extraemos palabras fuera de las comillas
+            const remaining = normalized.replace(/'([^']+)'/g, " ");
+            const wordLabels = remaining.split(" ").filter(w => w.length > 0);
+            
+            return [...quotedLabels, ...wordLabels];
+        }
+        
+    }
+}).mount('#app')
+</script>
+</body>
+</html>
