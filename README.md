@@ -5,7 +5,7 @@ Catalogue interactiv de jeux de société adaptés à du matériel courant : jeu
 🎲 Plus de 90 jeux référencés.
 
 Consulter le catalogue
-👉 https://user.github.io/projet52cartes/
+👉 https://ramiro1000fuegos.github.io/projet52cartes/
 
 
 # LE SITE WEB
