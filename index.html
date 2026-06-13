@@ -21,6 +21,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+<!-- ############################################################################################################################################## -->
+<!-- ##                                                                                                                                          ## -->
+<!-- ##                                                                CSS                                                                       ## -->    
+<!-- ##                                                                                                                                          ## -->    
+<!-- ############################################################################################################################################## -->    
+ 
+    
     <style>
         [v-cloak] { display: none; }
         /* Botones de Jugadores */
@@ -173,14 +180,77 @@
             max-height: 85vh;
             overflow-y: auto;
         }
-       
+
+        /* Contenedor del Tooltip */
+        .has-tooltip {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        /* La burbuja de texto */
+        .tooltip-text {
+            visibility: hidden;
+            position: absolute;
+            bottom: 110%; /* Aparece arriba del botón */
+            background-color: #1e293b; /* Slate 800 */
+            color: #ffffff;
+            text-align: center;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+            transform: translateY(5px);
+            pointer-events: none; /* Para que no interfiera con el clic */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Triángulo del tooltip */
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1e293b transparent transparent transparent;
+        }
+        
+        /* Mostrar al hacer Hover */
+        .has-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Asegurar cursor de mano en todos los controles */
+        button, select, .game-card {
+            cursor: pointer;
+        }
+        
     </style>
 </head>
+
+<!-- ############################################################################################################################################## -->
+<!-- ##                                                                                                                                          ## -->
+<!-- ##                                                                HTML                                                                      ## -->    
+<!-- ##                                                                                                                                          ## -->    
+<!-- ############################################################################################################################################## -->    
+    
 <body class="bg-slate-50 p-4 font-sans text-slate-900 tracking-tight">
 
 <div id="app" v-cloak class="max-w-6xl mx-auto pb-20">
         
-        <!-- 1. HEADER EDITORIAL -->
+<!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        HEATHER
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
         <header class="py-4 flex flex-col md:flex-row justify-between items-start gap-8 border-b border-slate-200 mb-4 md:mb-10">
           
             <div class="max-w-2xl">
@@ -193,7 +263,10 @@
             </div>
         </header>
     
-        <!-- 2. RECHERCHE & FILTRES -->
+<!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        RECHERCHE
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
         <section id="filter-section" class="section-card sticky top-0 rounded-t-none z-40 bg-white/95 backdrop-blur-sm shadow-xl mb-6 rounded-xl">
 
             <div class="px-2 pt-2 md:px-4 md:pt-4 flex items-center search-container">
@@ -218,15 +291,6 @@
                     </button>
                 </div>
 
-                <!-- 
-                    <div class="flex gap-1 text-slate-600 hover:text-slate-900 transition-colors h-10 w-10 mx-auto">
-                    <button @click="showInfoPopup = true" class="btn-corner" title="Informations">
-                        <i class="fa-solid fa-circle-info"></i>
-                    </button>
-                    <button @click="showHelpPopup = true" class="btn-corner" title="Aide">
-                        <i class="fa-solid fa-circle-question"></i>
-                    </button>
-                </div>         -->
                 <!-- Botones de ayuda (Círculos) -->
                 <button @click="showHelpPopup = true" class="btn-corner" title="Aide">
                     <i class="fa-solid fa-question text-sm"></i> <!--<i class="fa-solid fa-circle-question"></i>-->
@@ -237,13 +301,14 @@
                 
             </div>
 
+            <!--------------------------------------------------------------------------------------------------------------------------------------------------->
             
             <!--<div class="grid grid-cols-2 md:grid-cols-12 gap-x-4 gap-y-3 items-start p-2 md:p-4">-->
             <div class="grid grid-cols-2 md:grid-cols-12 gap-2 items-start p-2 md:p-4">
                 
                 <!-- Joueurs -->
                 <div class="col-span-2 md:col-span-5">
-                    <h3 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-widest">Joueurs</h3>
+                    <h3 class="text-xs font-black uppercase text-slate-400 mb-1 tracking-widest">&nbsp;Joueurs</h3>
                         
                     <!-- Fila 1: 1-5 + Control -->
                     <div class="grid grid-cols-6 gap-2 mb-2 items-center text-center">
@@ -251,7 +316,7 @@
                                 :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
                             {{n}}
                         </button>
-                        <button @click="toggleRange6to10" class="flex items-center justify-center text-indigo-600 hover:text-indigo-900 transition-colors h-10 w-10 mx-auto">
+                        <button @click="toggleRange6to10" class="flex items-center justify-left text-slate-400 hover:text-slate-600 transition-colors h-10 w-10 mx-auto">
                             <i class="fa-solid" :class="showRange6to10 ? 'fa-circle-minus text-xl' : 'fa-circle-plus text-xl'"></i>
                         </button>
                     </div>
@@ -262,7 +327,7 @@
                                 :class="selectedPlayers.includes(n) ? 'btn-player-active' : 'btn-player-inactive'" class="btn-player">
                             {{n}}
                         </button>
-                        <button @click="toggleRange11to20" class="flex items-center justify-center text-indigo-600 hover:text-indigo-900 transition-colors h-10 w-10 mx-auto">
+                        <button @click="toggleRange11to20" class="flex items-center justify-left  text-slate-400 hover:text-slate-600 transition-colors h-10 w-10 mx-auto">
                             <i class="fa-solid" :class="showRange11to20 ? 'fa-circle-minus text-xl' : 'fa-circle-plus text-xl'"></i>
                         </button>
                     </div>
@@ -288,13 +353,15 @@
                         </div>
                     </div>
                 </div>
+
+                <!--------------------------------------------------------------------------------------------------------------------------------------------------->
                 
                 <!-- Fila de filtros: Matériel (1/3), Âge (1/3), Boutons (1/3) -->
                 <div class="col-span-2 md:col-span-7 grid grid-cols-3 gap-2 md:gap-4 items-end">                    
 
                     <!-- Âge (1 de 3) -->
                     <div class="flex flex-col">              
-                        <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-widest">Âge</h3>
+                        <h3 class="text-xs font-black uppercase text-slate-400 mb-1 tracking-widest">&nbsp;Âge</h3>
                         <select v-model="filters.age" class="w-full bg-slate-50 border-2 border-slate-100 p-2 rounded-xl text-xs font-bold outline-none focus:border-indigo-500">
                             <option :value="99">Sans limite</option>
                             <option v-for="a in [12,10,8,6]" :value="a">{{a}}-{{a+1}} ans</option>
@@ -303,8 +370,8 @@
                     
                     <!-- Material (1 de 3) -->
                     <div class="flex flex-col">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xs font-black uppercase text-slate-400 tracking-widest">Matériel</h3>
+                        <div class="flex justify-between items-center mb-1">
+                            <h3 class="text-xs font-black uppercase text-slate-400 tracking-widest">&nbsp;Matériel</h3>
                         </div>
                         <select v-model="filters.material" class="w-full bg-slate-50 border-2 border-slate-100 p-2 rounded-xl text-xs font-bold outline-none focus:border-indigo-500">
                             <option value="3">Maxi</option>
@@ -313,47 +380,54 @@
                         </select>
                     </div>
 
-               
+                    <!--------------------------------------------------------------------------------------------------------------------------------------------------->
+                    
                     <!-- 3. Groupe de 3 Boutons (Flash, Fav, New) -->
-                    <div class="grid grid-cols-3 gap-1"> <!-- gap-1 pour serrer les boutons -->
-
-                         <!-- Botón Flash 52 (1 de 9) -->
-                       <div class="flex flex-col">
-                            <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-tighter text-center">Flash</h3>
-                            <button @click="filters.onlyFlash = !filters.onlyFlash" 
-                                    :class="filters.onlyFlash ? 'btn-player-active' : 'btn-player-inactive'"
-                                    class="btn-player w-full flex items-center justify-center py-2 h-[34px]">
-                                <i class="fa-solid fa-bolt"></i>
-                            </button>                        
+                    <div class="flex flex-col">
+                        <!-- Etiqueta unificada para indicar que es un ORDEN -->
+                        <h3 class="text-xs font-black uppercase text-slate-400 text-center tracking-widest  mb-1">Priorité</h3>
+                        <div class="grid grid-cols-3 gap-1 bg-slate-100 p-0.5 rounded-xl border border-slate-200">
+                            <!-- Botón Flash -->
+                            <div class="has-tooltip">
+                                <button @click="toggleSortMode('flash')" 
+                                        :class="filters.activeSortMode === 'flash' ? 'bg-indigo-950 text-white shadow-sm' : 'text-slate-400'"
+                                        class="rounded-lg flex items-center w-full justify-center py-2 h-[30px] transition-all">
+                                    <i class="fa-solid fa-bolt text-[10px]"></i>
+                                </button>
+                                <span class="tooltip-text">Démarrage rapide</span>
+                            </div>
+                            <!-- Botón Fav -->
+                            <div class="has-tooltip">
+                                <button @click="toggleSortMode('fav')" 
+                                        :class="filters.activeSortMode === 'fav' ? 'bg-indigo-950 text-white shadow-sm' : 'text-slate-400'"
+                                        class="rounded-lg flex items-center w-full justify-center py-2 h-[30px] transition-all">
+                                    <i class="fa-solid fa-heart text-[10px]"></i>
+                                </button>
+                                <span class="tooltip-text">Meilleures adaptations</span>
+                            </div>                                
+                            <!-- Botón New -->
+                            <div class="has-tooltip">
+                                <button @click="toggleSortMode('new')" 
+                                        :class="filters.activeSortMode === 'new' ? 'bg-indigo-950 text-white shadow-sm' : 'text-slate-400'"
+                                        class="rounded-lg flex items-center w-full justify-center py-2 h-[30px] transition-all">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                </button>
+                                <span class="tooltip-text">Nouveautés</span>
+                            </div>
                         </div>
-                        
-                         <!-- Botón Coeur (1 de 9) -->
-                        <div class="flex flex-col">
-                            <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-tighter text-center">Fav</h3>
-                            <button @click="filters.onlyHeart = !filters.onlyHeart" 
-                                    :class="filters.onlyHeart ? 'btn-player-active' : 'btn-player-inactive'"
-                                    class="btn-player w-full flex items-center justify-center py-2 h-[34px]">
-                                <i class="fa-solid fa-heart"></i>
-                            </button>                        
-                        </div>
-    
-                         <!-- Botón New (1 de 9) -->
-                        <div class="flex flex-col">
-                            <h3 class="text-xs font-black uppercase text-slate-400 mb-2 tracking-tighter text-center">New</h3>
-                            <button @click="filters.onlyNew = !filters.onlyNew" 
-                                    :class="filters.onlyNew ? 'btn-player-active' : 'btn-player-inactive'"
-                                    class="btn-player w-full flex items-center justify-center py-2 h-[34px]">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                            </button>                        
-                        </div>
-                        
                     </div>
+                    
                 </div>
             </div>
         </section>
 
+<!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        RESULTATS
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    
     <!-- 4. RÉSULTATS JEUX -->
-    <div v-if="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+    <div v-if="!loading" id="results-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
        
         <div v-for="game in filteredGames" :key="game.id" 
              :id="'game-' + game.id" 
@@ -400,13 +474,6 @@
               
                 <div v-if="expandedId === game.id" class="mt-3 pt-3 space-y-4 animate-fade-in">
 
-                    <!--
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-s">
-                        <h4 class="font-black uppercase text-slate-600 mb-1 tracking-widest">Fidélité : {{ game.fidelityScore }}/4</h4>
-                        <p class="text-slate-600 italic">{{ game.fidelityDetails }}</p>
-                    </div>
-                    -->
-
                     <!-- Bloque Fidelidad (dentro de la ficha expandida) -->
                     <div class="fidelity-box">
                         <div class="flex justify-between items-center mb-1">
@@ -449,7 +516,10 @@
         </div>
     </div>
 
-    <!-- Popups (Modals) -->
+<!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        POPUPS
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
     <!-- POPUP AYUDA (?) -->
     <div v-if="showHelpPopup" class="modal-overlay" @click.self="showHelpPopup = false">
         <div class="modal-content animate-fade-in">
@@ -465,14 +535,15 @@
             <p><b>Standard</b> = 2 jeux, jetons, dés, quelques pages imprimées réutilisables (inclut Mini)</p>
             <p><b>Maxi</b> = matériel additionnel ou spécial (inclut Standard)</p>
 
-            <h3 class="text-lg font-black text-indigo-600 leading-tight uppercase mt-4">Icônes</h3>
-            <p><b>Flash</b> = rapide à expliquer et à jouer</p>
-            <p><b>Fav</b> = mes coups de cœur</p>
-            <p><b>New</b> = ajouts du mois</p>
-
             <h3 class="text-lg font-black text-indigo-600 leading-tight uppercase mt-4">Recherche textuelle</h3>
             <p>Utilisez-la pour chercher le titre original, l'auteur, la date de publication, le titre de l'adaptation, la catégorie BGG, le matériel utilisé, une mécanique…</p>
             <p class="text-slate-500"><i>Ex : "party", "dés", "plis", "Knizia", "2019", "coopératif"</i></p>
+
+            <h3 class="text-lg font-black text-indigo-600 leading-tight uppercase mt-4">Priorité</h3>
+            <p><b>⚡</b> = rapide à expliquer et à jouer</p>
+            <p><b>❤️</b> = meilleures adaptations</p>
+            <p><b>🪄</b> = les nouveautés d'abord</p>
+
         </div>
     </div>
 
@@ -486,12 +557,18 @@
             <h3 class="text-lg font-black text-indigo-600 leading-tight uppercase">À propos des adaptations</h2>
             <p class="mt-4">La plupart des jeux sont des adaptations de titres publiés, rendues jouables avec du matériel courant.</p>
             <p class="mt-4">Règles, illustrations et éléments protégés sont recréés ; le jeu original est toujours cité.</p>
-            <p class="mt-4">Ce projet n'est pas un substitut — il encourage à découvrir les œuvres de leurs auteurs.</p>
+            <p class="mt-4">Ce projet n'est pas un substitut: il encourage à découvrir les œuvres de leurs auteurs.</p>
         </div>
     </div>
     
 </div>
 
+<!-- ############################################################################################################################################## -->
+<!-- ##                                                                                                                                          ## -->
+<!-- ##                                                                JAVASCRIPT                                                                ## -->    
+<!-- ##                                                                                                                                          ## -->    
+<!-- ############################################################################################################################################## -->    
+    
 <script>
 const { createApp } = Vue
 
@@ -516,7 +593,11 @@ createApp({
                 { name: "Abstrait", label: "Abstrait", icon: "fa-solid fa-chess-board" },
                 { name: "Stratégie", label: "Stratégie", icon: "fa-solid fa-gears" }
             ],
-            filters: { age: 99, material: 3, time: '3-Long', cats: [], onlyNew: false, onlyHeart: false, onlyFlash: false  }
+            filters: {
+                age: 99, 
+                material: 3, 
+                activeSortMode: 'default', // 'default', 'new', 'fav', 'flash'
+            }
         }
     },
     mounted() { this.fetchData(); },
@@ -542,12 +623,34 @@ createApp({
                 const matchAge = game.ageMin <= this.filters.age;
                 const configRank = { 'Mini': 1, 'Standard': 2, 'Maxi': 3 };
                 const matchMaterial = game.configLevel <= this.filters.material;
-                const matchNew = this.filters.onlyNew ? game.isNew : true;
-                const matchHeart = this.filters.onlyHeart ? game.heart : true;
-                const matchFlash = this.filters.onlyFlash ? game.isFlash : true;
-                return matchPlayer && matchAge && matchMaterial && matchFlash && matchNew && matchHeart;
+                return matchPlayer && matchAge && matchMaterial;
             }).sort((a, b) => {
-               // A. Contamos solo los verdes (🟢) para la selección actual
+                const mode = this.filters.activeSortMode;
+
+                // 1. MODO NEW: Estrictamente por fecha
+                if (mode === 'new') {
+                    return b.dateAdded - a.dateAdded;
+                }
+        
+                // 2. MODO FAV: Corazón > Nota RKF > Ranking BGG
+                if (mode === 'fav') {
+                    if (a.heart !== b.heart) return b.heart ? 1 : -1;
+                    if (a.scoreRKF !== b.scoreRKF) return b.scoreRKF - a.scoreRKF;
+                    return (parseInt(a.rankingBGG) || 30000) - (parseInt(b.rankingBGG) || 30000);
+                }
+
+                // 3. MODO FLASH: Rayo > Tiempo (Express > Courant > Long)
+                if (mode === 'flash') {
+                    if (a.isFlash !== b.isFlash) return b.isFlash ? 1 : -1;
+                    const timeMap = { '1-Express': 1, '2-Courant': 2, '3-Long': 3 };
+                    const timeA = timeMap[a.timeStart] || 3;
+                    const timeB = timeMap[b.timeStart] || 3;
+                    if (timeA !== timeB) return timeA - timeB;
+                    return (parseInt(a.rankingBGG) || 30000) - (parseInt(b.rankingBGG) || 30000);
+                }                
+                
+                // 4. MODO DEFAULT: número de verdes (🟢) > Weighted Rank
+                // A. Contamos solo los verdes (🟢) para la selección actual
                 const getGreenCount = (game) => {
                     if (this.selectedPlayers.length === 0) return 0;
                     return this.selectedPlayers.reduce((acc, p) => 
@@ -604,6 +707,39 @@ createApp({
             if (!this.showRange11to20) {
                 this.selectedPlayers = this.selectedPlayers.filter(n => n <= 10);
             }
+        },
+        toggleSortMode(mode) {
+            if (this.filters.activeSortMode === mode) {
+                this.filters.activeSortMode = 'default';
+            } else {
+                this.filters.activeSortMode = mode;
+            }
+
+            // 2. Ejecutamos el scroll
+            // Usamos un pequeño retraso para que a Vue le dé tiempo a reordenar las fichas
+            setTimeout(() => {
+                const resultsEl = document.getElementById('results-container');
+                const filterEl = document.getElementById('filter-section');
+        
+                if (resultsEl && filterEl) {
+                    // Posición real del contenedor de juegos desde el techo de la web
+                    const containerTop = resultsEl.getBoundingClientRect().top + window.pageYOffset;
+                    
+                    // Altura de la barra de filtros (que está flotando)
+                    const headerHeight = filterEl.offsetHeight;
+        
+                    // Calculamos el punto exacto:
+                    // Queremos que el inicio del contenedor coincida con el final de la barra
+                    // Restamos un poco más (ej. 16px) para que no esté pegado al borde
+                    const finalPos = containerTop - headerHeight - 16;
+        
+                    window.scrollTo({
+                        top: finalPos,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 50); // 50 milisegundos son suficientes
+            
         },        
         toggleExpand(id) {
             if (this.expandedId === id) {
