@@ -440,7 +440,7 @@
                     <div class="flex-1">
                         <h2 class="text-lg font-black text-slate-900 leading-tight uppercase">{{ game.name }} 
                         <span v-if="game.heart">❤️</span> 
-                        <span v-if="game.isNew">🪄</span> 
+                        <span v-if="game.isNew"><span class="text-indigo-600"><i class="fa-solid fa-wand-magic-sparkles"></span></i></span> 
                         <span v-if="game.isFlash">⚡</span>                            
                         </h2>
                         <p class="text-s text-slate-300 font-bold mt-1 uppercase">{{ game.origin }}</p>
@@ -542,7 +542,7 @@
             <h3 class="text-lg font-black text-indigo-600 leading-tight uppercase mt-4">Priorité</h3>
             <p><b>⚡</b> = rapide à expliquer et à jouer</p>
             <p><b>❤️</b> = meilleures adaptations</p>
-            <p><b>🪄</b> = les nouveautés d'abord</p>
+            <p><b><span class="text-indigo-600"><i class="fa-solid fa-wand-magic-sparkles"></span></i></b> = les nouveautés d'abord</p>
 
         </div>
     </div>
