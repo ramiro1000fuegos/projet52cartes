@@ -772,8 +772,8 @@ createApp({
         console.log(`[P52] Path actual : ${host}${path}`);
         
         // Recuperamos sus votos anteriores para iluminar los emojis
-        console.log('Clé lue:', `rkf_user_votes_${env}`);
-        console.log('Valeur lue:', localStorage.getItem(`rkf_user_votes_${env}`));
+        console.log('Clé lue:', `rkf_user_votes_${this.env}`);
+        console.log('Valeur lue:', localStorage.getItem(`rkf_user_votes_${this.env}`));
         
     
         // 2. Diccionario de URLs por entorno
@@ -835,7 +835,7 @@ createApp({
             
             // Recuperamos el ID del usuario o creamos uno nuevo
             visitorId: localStorage.getItem('rkf_user_id') || 'user_' + Math.random().toString(36).substr(2, 9),
-            userVotes: JSON.parse(localStorage.getItem(`rkf_user_votes_${env}`) || '{}'),
+            userVotes: JSON.parse(localStorage.getItem(`rkf_user_votes_${this.env}`) || '{}'),
 
             showCommentModal: false,
             activeFeedbackGame: null,
@@ -1092,7 +1092,7 @@ createApp({
         },        
         saveLocalVote(gameId, val) {
             this.userVotes[gameId] = val;
-            console.log('Clé écrite:', `rkf_user_votes_${env}`);
+            console.log('Clé écrite:', `rkf_user_votes_${this.env}`);
             localStorage.setItem(`rkf_user_votes_${env}`, JSON.stringify(this.userVotes));
         },        
         async fetchData() {
