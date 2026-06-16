@@ -503,7 +503,7 @@
                         <span v-if="game.isFlash">⚡</span> 
                         <span v-if="game.heart">❤️</span> 
                         <span v-if="userVotes[game.name]">
-                            {{ {1:'😞', 2:'😐', 3:'🙂', 4:'😍'}[userVotes[game.name]] }}
+                            {{ {1:'😫', 2:'🙁', 3:'🙂', 4:'😍'}[userVotes[game.name]] }}   
                         </span>
                     </h2></div>
 
@@ -546,7 +546,7 @@
                         <div class="flex flex-col gap-2">
                             <span class="text-indigo-600 text-s font-bold">J'ai testé l'adaptation :</span>
                             <div class="flex gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
-                                <button v-for="(emoji, val) in {1:'😞', 2:'😐', 3:'🙂', 4:'😍'}" 
+                                <button v-for="(emoji, val) in {1:'😫', 2:'🙁', 3:'🙂', 4:'😍'}" 
                                         @click.stop="handleVote(game.name, parseInt(val))"
                                         class="text-xl transition-all hover:scale-125"
                                         :class="userVotes[game.name] == val ? 'grayscale-0 opacity-100' : 'grayscale opacity-30 hover:opacity-100'">
@@ -1223,7 +1223,7 @@ createApp({
                 this.updateLocalStats(gameId, val); // <--- Recalcular ahora
                 this.saveLocalVote(gameId, val);    // <--- Guardar emoji
                 await this.sendToGoogle(this.currentFeedback);
-            } else { // 😞 y 😐 abren feedback
+            } else { // 😫 y 🙁abren feedback
                 this.currentFeedback = { 
                     gameId: gameId, rating: val, 
                     issues: { material: false, prep: false, rules: false, exp: false, hook: false }, 
