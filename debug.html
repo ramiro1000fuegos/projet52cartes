@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P52 - Debug & Storage</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 p-6 font-sans">
+
+<div id="app" class="max-w-2xl mx-auto">
+    <header class="mb-8">
+        <h1 class="text-2xl font-black text-slate-900 uppercase">🛠️ P52 Debug Tool</h1>
+        <p class="text-slate-500 text-sm">Gestion du stockage local et des identifiants.</p>
+    </header>
+
+    <!-- SECTION IDENTITÉ -->
+    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 mb-6">
+        <h2 class="text-xs font-black uppercase text-indigo-600 tracking-widest mb-4">Votre Identité (Persistent)</h2>
+        <div class="flex items-center justify-between bg-slate-50 p-4 rounded-2xl border border-slate-100">
+            <code class="text-lg font-mono font-bold text-slate-700">{{ visitorId || 'Non défini' }}</code>
+            <button @click="copyId" class="text-slate-400 hover:text-indigo-600 transition-colors">
+                <i class="fa-solid fa-copy"></i>
+            </button>
+        </div>
+        <p class="text-[10px] text-slate-400 mt-3 italic">Cet ID est utilisé pour pister vos votes dans Google Sheets.</p>
+    </div>
+
+    <!-- SECTION VOTES PAR ENVIRONNEMENT -->
+    <div v-for="env in ['PROD', 'PRE', 'TEST']" :key="env" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 mb-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xs font-black uppercase text-slate-900 tracking-widest">Votes : {{ env }}</h2>
+            <button v-if="hasVotes(env)" @click="clearVotes(env)" class="text-[10px] font-black uppercase text-rose-500 hover:underline">
+                Effacer les votes {{ env }}
+            </button>
+        </div>
+
+        <div v-if="hasVotes(env)" class="space-y-2">
+            <div v-for="(val, game) in getVotes(env)" :key="game" class="flex justify-between items-center bg-slate-50 px-4 py-2 rounded-xl text-sm border border-slate-100">
+                <span class="font-bold text-slate-700">{{ game }}</span>
+                <span class="text-lg">{{ {1:'😞', 2:'😐', 3:'🙂', 4:'😍'}[val] }}</span>
+            </div>
+        </div>
+        <div v-else class="text-sm text-slate-300 italic text-center py-4">
+            Aucun vote enregistré dans cet environnement.
+        </div>
+    </div>
+
+    <!-- ACTIONS GLOBALES -->
+    <div class="flex gap-4">
+        <button @click="refresh" class="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-black transition-all">
+            Actualiser
+        </button>
+        <a href="index.html" class="flex-1 bg-white border-2 border-slate-200 text-slate-600 py-4 rounded-2xl font-black uppercase text-xs tracking-widest text-center hover:bg-slate-50 transition-all">
+            Retour au site
+        </a>
+    </div>
+
+    <div class="mt-10 p-4 bg-amber-50 border border-amber-100 rounded-2xl">
+        <p class="text-[10px] text-amber-700 leading-relaxed">
+            <i class="fa-solid fa-triangle-exclamation mr-1"></i>
+            <strong>Attention :</strong> Si vous effacez les votes ici mais qu'ils sont encore présents dans la Google Sheet, l'application risque de les "re-synchroniser" automatiquement au prochain chargement à cause de la latence du cache Google (5-10 min).
+        </p>
+    </div>
+</div>
+
+<script>
+const { createApp } = Vue
+createApp({
+    data() {
+        return {
+            visitorId: localStorage.getItem('rkf_user_id'),
+            // On force un rafraîchissement réactif
+            storageKey: Date.now() 
+        }
+    },
+    methods: {
+        hasVotes(env) {
+            const votes = localStorage.getItem(`rkf_user_votes_${env}`);
+            return votes && votes !== '{}';
+        },
+        getVotes(env) {
+            return JSON.parse(localStorage.getItem(`rkf_user_votes_${env}`) || '{}');
+        },
+        clearVotes(env) {
+            if(confirm(`Voulez-vous supprimer tous vos votes en ${env} ? (Votre ID sera conservé)`)) {
+                localStorage.removeItem(`rkf_user_votes_${env}`);
+                localStorage.removeItem(`rkf_vote_ts_${env}`);
+                this.storageKey = Date.now(); // Force le re-render
+                alert(`Votes ${env} supprimés localement.`);
+            }
+        },
+        copyId() {
+            navigator.clipboard.writeText(this.visitorId);
+            alert("ID copié dans le presse-papier !");
+        },
+        refresh() {
+            window.location.reload();
+        }
+    }
+}).mount('#app')
+</script>
+</body>
+</html>
