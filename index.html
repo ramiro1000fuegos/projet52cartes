@@ -768,7 +768,7 @@ createApp({
         }
     
         // Console log informativo para el desarrollador
-        console.log(`%c [P52] Environnement détecté : ${env} `, 'background: #1e1b4b; color: #fff; font-weight: bold;');
+        console.log(`%c [P52] Environnement détecté : ${this.env} `, 'background: #1e1b4b; color: #fff; font-weight: bold;');
         console.log(`[P52] Path actual : ${host}${path}`);
         
         // Recuperamos sus votos anteriores para iluminar los emojis
@@ -1093,7 +1093,7 @@ createApp({
         saveLocalVote(gameId, val) {
             this.userVotes[gameId] = val;
             console.log('Clé écrite:', `rkf_user_votes_${this.env}`);
-            localStorage.setItem(`rkf_user_votes_${env}`, JSON.stringify(this.userVotes));
+            localStorage.setItem(`rkf_user_votes_${this.env}`, JSON.stringify(this.userVotes));
         },        
         async fetchData() {
             try {
