@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T32 — Adaptation de 32LDK | Projet 52 cartes</title>
+<meta name="description" content="T32, adaptation de 32LDK (2026) par Rokujizō. Jeu de défausse et de prise de risque pour 3 à 6 joueurs dès 8 ans, jouable avec un simple jeu de cartes.">
+<link rel="canonical" href="https://ramiro1000fuegos.github.io/projet52cartes/jeux/t32.html">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="T32 — Adaptation de 32LDK | Projet 52 cartes">
+<meta property="og:description" content="Jeu de défausse et de prise de risque pour 3 à 6 joueurs dès 8 ans, jouable avec un simple jeu de cartes.">
+<meta property="og:url" content="https://ramiro1000fuegos.github.io/projet52cartes/jeux/t32.html">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Données structurées : décrivent CE jeu précisément, en plus de ce qui est visible ci-dessous -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Game",
+  "name": "T32",
+  "description": "Jeu de défausse et de prise de risque où vous cherchez à finir avec le moins de cartes possible en main. Jouez une carte ou une suite, révélez une carte de la Réserve ou piochez chez une autre personne. Mais attention : jouer plus faible vous oblige à ramasser toute la Pile. Débarrassez-vous de vos cartes, mais sachez parfois en récupérer pour préparer votre prochain coup.",
+  "isBasedOn": {
+    "@type": "Game",
+    "name": "32LDK",
+    "datePublished": "2026",
+    "author": "Rokujizō"
+  },
+  "numberOfPlayers": {
+    "@type": "QuantitativeValue",
+    "minValue": 3,
+    "maxValue": 6
+  },
+  "audience": {
+    "@type": "PeopleAudience",
+    "suggestedMinAge": 8
+  },
+  "url": "https://ramiro1000fuegos.github.io/projet52cartes/jeux/t32.html",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Projet 52 cartes",
+    "url": "https://ramiro1000fuegos.github.io/projet52cartes/"
+  }
+}
+</script>
+
+<style>
+  .btn-mobile { background-color:#1e1b4b; color:#fff; font-weight:700; transition:all .2s ease-in-out; }
+  .btn-mobile:hover { background-color:#312e81; }
+  .btn-bgg { background-color:#e2e8f0; color:#334155; font-weight:700; transition:all .2s ease-in-out; }
+  .btn-bgg:hover { background-color:#cbd5e1; color:#1e293b; }
+  .attr-pill {
+    display:inline-flex; align-items:center; gap:3px;
+    border:1px solid #cbd5e1; padding:3px 12px; border-radius:50px;
+    font-size:.9rem; font-weight:500; color:#334155; background-color:#fbfcfd;
+  }
+</style>
+</head>
+<body class="bg-slate-50 p-4 font-sans text-slate-900 tracking-tight">
+
+<div class="max-w-3xl mx-auto pb-20">
+
+  <!-- Fil d'ariane / retour -->
+  <a href="../index.html" class="inline-flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-800 mb-6">
+    <i class="fa-solid fa-arrow-left"></i> Retour au Projet 52 cartes
+  </a>
+
+  <!-- En-tête de la fiche -->
+  <header class="bg-white rounded-[2rem] border-2 border-slate-200 shadow-sm p-6 md:p-8 mb-6">
+    <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none mb-2">T32</h1>
+    <p class="text-slate-400 font-bold uppercase text-sm mb-4">Adaptation de 32LDK (2026)</p>
+
+    <div class="flex flex-wrap gap-2 mb-4">
+      <div class="attr-pill"><i class="fa-solid fa-users text-indigo-300"></i> 3-6 joueurs</div>
+      <div class="attr-pill"><i class="fa-solid fa-cake-candles text-indigo-300"></i> 8+</div>
+      <div class="attr-pill"><i class="fa-solid fa-box text-indigo-300"></i> Mini</div>
+    </div>
+
+    <p class="text-slate-600 leading-relaxed mb-2">
+      Jeu de défausse et de prise de risque où vous cherchez à finir avec le moins de cartes possible en main.
+      Jouez une carte ou une suite, révélez une carte de la Réserve ou piochez chez une autre personne.
+      Mais attention : jouer plus faible vous oblige à ramasser toute la Pile. Débarrassez-vous de vos cartes,
+      mais sachez parfois en récupérer pour préparer votre prochain coup.
+    </p>
+    <p class="text-slate-600 leading-relaxed"><b>Création :</b> Rokujizō</p>
+  </header>
+
+  <!-- Règles intégrées -->
+  <section class="bg-white rounded-[2rem] border-2 border-slate-200 shadow-sm p-4 md:p-6 mb-6">
+    <h2 class="text-lg font-black uppercase text-indigo-600 mb-4">Règles du jeu</h2>
+    <div class="rounded-2xl overflow-hidden border border-slate-200">
+      <iframe
+        src="https://docs.google.com/document/d/1xX2lIkChaE2uF06nghTC2bHyGNkfCKz96Ipn5CgqN1E/preview"
+        style="width:100%; height:80vh; border:0;"
+        allow="autoplay"
+        loading="lazy"
+        title="Règles du jeu T32">
+      </iframe>
+    </div>
+  </section>
+
+  <!-- Boutons d'action -->
+  <div class="flex flex-col gap-3">
+    <a href="https://docs.google.com/document/d/1xX2lIkChaE2uF06nghTC2bHyGNkfCKz96Ipn5CgqN1E/edit?usp=sharing"
+       target="_blank" rel="noopener"
+       class="btn-mobile py-3 rounded-xl text-center flex items-center justify-center gap-2 shadow-sm">
+      <i class="fa-brands fa-google-drive opacity-70"></i> OUVRIR DANS GOOGLE DOCS
+    </a>
+
+    <div class="grid grid-cols-2 gap-3">
+      <!-- TODO : remplacer par le vrai lien PDF (colonne Lien_PDF du Google Sheet) -->
+      <a href="#" target="_blank" rel="noopener"
+         class="btn-mobile py-3 rounded-xl text-center flex items-center justify-center gap-2 shadow-sm">
+        <i class="fa-solid fa-file-pdf opacity-70"></i> PDF
+      </a>
+      <a href="../index.html"
+         class="btn-bgg py-3 rounded-xl text-center flex items-center justify-center gap-2">
+        <i class="fa-solid fa-house opacity-70"></i> PROJET 52 CARTES
+      </a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
