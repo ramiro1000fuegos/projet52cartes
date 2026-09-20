@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moutarde — Adaptation de Wazabi | Projet 52 cartes</title>
+<meta name="description" content="Jeu chaotique de gestion de dés où l&#39;objectif est de se débarrasser en premier de ses dés. Des cartes à pouvoir offrent toute une série d&#39;opportunités d&#39;at">
+<link rel="canonical" href="https://ramiro1000fuegos.github.io/projet52cartes/jeux/wazabi.html">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Moutarde — Adaptation de Wazabi | Projet 52 cartes">
+<meta property="og:description" content="Jeu chaotique de gestion de dés où l&#39;objectif est de se débarrasser en premier de ses dés. Des cartes à pouvoir offrent toute une série d&#39;opportunités d&#39;at">
+<meta property="og:url" content="https://ramiro1000fuegos.github.io/projet52cartes/jeux/wazabi.html">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Game",
+  "name": "Moutarde",
+  "description": "Jeu chaotique de gestion de dés où l'objectif est de se débarrasser en premier de ses dés. Des cartes à pouvoir offrent toute une série d'opportunités d'attaquer la personne de votre choix, faisant naturellement émerger alliances éphémères et règlements de comptes. Les dés sont à la fois une ressource (ils permettent d'activer les cartes) et la contrainte à surmonter (l'objectif est de s'en débarrasser).",
+  "isBasedOn": {
+    "@type": "Game",
+    "name": "Wazabi",
+    "datePublished": "2008",
+    "author": "Guilhem Debricon"
+  },
+  "url": "https://ramiro1000fuegos.github.io/projet52cartes/jeux/wazabi.html",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Projet 52 cartes",
+    "url": "https://ramiro1000fuegos.github.io/projet52cartes/"
+  }
+}
+</script>
+
+<style>
+  .btn-mobile { background-color:#1e1b4b; color:#fff; font-weight:700; transition:all .2s ease-in-out; }
+  .btn-mobile:hover { background-color:#312e81; }
+  .btn-bgg { background-color:#e2e8f0; color:#334155; font-weight:700; transition:all .2s ease-in-out; }
+  .btn-bgg:hover { background-color:#cbd5e1; color:#1e293b; }
+</style>
+</head>
+<body class="bg-slate-50 p-4 font-sans text-slate-900 tracking-tight">
+
+<div class="max-w-3xl mx-auto pb-20">
+
+  <a href="../index.html" class="inline-flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-800 mb-6">
+    <i class="fa-solid fa-arrow-left"></i> Retour au Projet 52 cartes
+  </a>
+
+  <header class="bg-white rounded-[2rem] border-2 border-slate-200 shadow-sm p-6 md:p-8 mb-6">
+    <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none mb-2">Moutarde</h1>
+    <p class="text-slate-400 font-bold uppercase text-sm mb-4">Adaptation de Wazabi (2008)</p>
+    <p class="text-slate-600 leading-relaxed mb-2">Jeu chaotique de gestion de dés où l&#39;objectif est de se débarrasser en premier de ses dés. Des cartes à pouvoir offrent toute une série d&#39;opportunités d&#39;attaquer la personne de votre choix, faisant naturellement émerger alliances éphémères et règlements de comptes. Les dés sont à la fois une ressource (ils permettent d&#39;activer les cartes) et la contrainte à surmonter (l&#39;objectif est de s&#39;en débarrasser).</p>
+    <p class="text-slate-600 leading-relaxed"><b>Création :</b> Guilhem Debricon</p>
+  </header>
+
+  <section class="bg-white rounded-[2rem] border-2 border-slate-200 shadow-sm p-2 sm:p-4 md:p-6 mb-6">
+    <div class="flex items-center justify-between mb-4 px-2 sm:px-0">
+      <h2 class="text-lg font-black uppercase text-indigo-600">Règles du jeu</h2>
+      <a href="https://docs.google.com/document/d/1k45w6ZUss79U45URTXAGQkrP0YaO3QNt1c_49ANe-jA/edit?usp=sharing" target="_blank" rel="noopener" class="text-xs font-bold text-slate-400 hover:text-indigo-600 flex items-center gap-1"><i class="fa-solid fa-up-right-and-down-left-from-center"></i> Plein écran</a>
+    </div>
+
+    <div class="relative -mx-2 sm:mx-0 rounded-none sm:rounded-2xl overflow-hidden border-y sm:border border-slate-200 bg-slate-50" style="height:88vh;">
+      <div id="docs-loading-overlay" class="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-slate-50 z-10 px-6 text-center">
+        <div class="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+        <p id="docs-loading-text" class="text-sm font-bold text-slate-500">Chargement des règles depuis Google Docs…</p>
+        <a id="docs-loading-fallback" href="https://docs.google.com/document/d/1k45w6ZUss79U45URTXAGQkrP0YaO3QNt1c_49ANe-jA/edit?usp=sharing" target="_blank" rel="noopener" class="hidden btn-mobile px-5 py-2.5 rounded-xl text-sm font-bold items-center gap-2"><i class="fa-brands fa-google-drive"></i> Ouvrir directement dans Google Docs</a>
+      </div>
+      <iframe src="https://docs.google.com/document/d/1k45w6ZUss79U45URTXAGQkrP0YaO3QNt1c_49ANe-jA/preview" style="width:100%; height:100%; border:0;" allow="autoplay" title="Règles du jeu Moutarde" onload="document.getElementById('docs-loading-overlay').style.display='none';"></iframe>
+    </div>
+
+    <script>
+      setTimeout(function() {
+        var overlay = document.getElementById('docs-loading-overlay');
+        if (overlay && overlay.style.display !== 'none') {
+          document.getElementById('docs-loading-text').textContent = "Le chargement prend plus de temps que prévu…";
+          var fallback = document.getElementById('docs-loading-fallback');
+          if (fallback) { fallback.classList.remove('hidden'); fallback.classList.add('inline-flex'); }
+        }
+      }, 8000);
+    </script>
+  </section>
+  <div class="flex flex-col gap-3">
+    
+    <a href="https://docs.google.com/document/d/1k45w6ZUss79U45URTXAGQkrP0YaO3QNt1c_49ANe-jA/edit?usp=sharing" target="_blank" rel="noopener" class="btn-mobile py-3 rounded-xl text-center flex items-center justify-center gap-2 shadow-sm">
+      <i class="fa-brands fa-google-drive opacity-70"></i> OUVRIR DANS GOOGLE DOCS
+    </a>
+    <div class="grid grid-cols-2 gap-3">
+      <a href="https://drive.proton.me/urls/TVX6QZBG5C#i61S4XrBWHGl" target="_blank" rel="noopener" class="btn-mobile py-3 rounded-xl text-center flex items-center justify-center gap-2 shadow-sm"><i class="fa-solid fa-file-pdf opacity-70"></i> PDF</a>
+      <a href="../index.html" class="btn-bgg py-3 rounded-xl text-center flex items-center justify-center gap-2">
+        <i class="fa-solid fa-house opacity-70"></i> PROJET 52 CARTES
+      </a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
