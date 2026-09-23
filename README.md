@@ -1,8 +1,8 @@
 # PROJET 52 CARTES
 
-Catalogue interactiv de jeux de société adaptés à du matériel courant : jeux de cartes, jeux de dés, jeux papier-crayon et autres jeux nécessitant peu de matériel spécialisé.
+Catalogue interactif de jeux de société adaptés à du matériel courant : jeux de cartes, jeux de dés, jeux papier-crayon et autres jeux nécessitant peu de matériel spécialisé.
 
-🎲 Plus de 90 jeux référencés.
+🎲 Plus de 100 jeux référencés.
 
 Consulter le catalogue
 👉 https://ramiro1000fuegos.github.io/projet52cartes/
@@ -11,7 +11,7 @@ Consulter le catalogue
 # LE SITE WEB
 
 Le site permet de filtrer les jeux par :
-- Nombre de joueurs
+- Nombre de joueurs 
 - Age
 - Matériel requis
 - Nom de l'adaptation
